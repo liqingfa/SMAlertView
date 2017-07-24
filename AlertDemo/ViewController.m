@@ -84,7 +84,7 @@
                 [SMAlert hide];
             }] cancleButton:nil];
         }else if(indexPath.row==2){
-            [SMAlert showImage:[UIImage imageNamed:@"shangpin_img_ticket"] content:@"您的权限已被修改，即将退出登录" confirmButton:nil cancleButton:nil];
+            [SMAlert showImage:[UIImage imageNamed:@"function_img_remind"] content:@"您的权限已被修改，即将退出登录" confirmButton:nil cancleButton:nil];
         }
     }
 }

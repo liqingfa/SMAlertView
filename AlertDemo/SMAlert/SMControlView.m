@@ -85,6 +85,7 @@ static const CGFloat SMControlViewHorizontalSpacing = 15.0f;
         return;
     }
     UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake((SMControlViewWidth-100)/2, SMControlViewHorizontalSpacing, 100, 90)];
+    imageView.contentMode = UIViewContentModeScaleAspectFill;
     [imageView setImage:image];
     
     CGFloat textHeight = [self contentHeight:content];

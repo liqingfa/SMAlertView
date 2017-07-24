@@ -37,7 +37,7 @@
 + (void)setCancleBtBackgroundColor:(UIColor*)color;
 + (void)setConfirmBtTitleColor:(UIColor*)color;
 + (void)setCancleBtTitleColor:(UIColor*)color;
-+ (void)contentTextColor:(UIColor*)color;
++ (void)setContentTextColor:(UIColor*)color;
 + (void)setContentFont:(UIFont*)font;
 + (void)setBtTitleFont:(UIFont*)font;
 + (void)setContentLineSpace:(CGFloat)lineSpace;

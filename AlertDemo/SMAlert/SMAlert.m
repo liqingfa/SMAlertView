@@ -204,7 +204,7 @@
     [SMAlert sharedView].contentFont = font;
 }
 
-+ (void)contentTextColor:(UIColor*)color {
++ (void)setContentTextColor:(UIColor*)color {
     [SMAlert sharedView].contentTextColor = color;
 }
 
