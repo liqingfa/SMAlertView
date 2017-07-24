@@ -8,7 +8,7 @@
 
 #import "SMControlView.h"
 
-static const CGFloat SMControlViewWidth = 300.0f;
+static const CGFloat SMControlViewWidth = 280.0f;
 static const CGFloat SMControlViewButtonHeight = 45.0f;
 static const CGFloat SMControlViewCornerRadius = 4.0f;
 static const CGFloat SMControlViewVerticalSpacing = 15.0f;
@@ -84,13 +84,16 @@ static const CGFloat SMControlViewHorizontalSpacing = 15.0f;
         [self setupContent:content confirmButton:confirmButton cancleButton:cancleButton];
         return;
     }
-    UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake((SMControlViewWidth-100)/2, SMControlViewHorizontalSpacing, 100, 90)];
-    imageView.contentMode = UIViewContentModeScaleAspectFill;
+    CGFloat imgH = image.size.height;
+    CGFloat imgW = image.size.width;
+    
+    UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake((SMControlViewWidth-imgW)/2, SMControlViewHorizontalSpacing, imgW, imgH)];
+    imageView.contentMode = UIViewContentModeCenter;
     [imageView setImage:image];
     
     CGFloat textHeight = [self contentHeight:content];
     UILabel *contentLabel = [[UILabel alloc]initWithFrame:CGRectMake(SMControlViewVerticalSpacing,
-                                                                     SMControlViewHorizontalSpacing*2+90,
+                                                                     SMControlViewHorizontalSpacing*2+imgH,
                                                                      SMControlViewWidth-SMControlViewVerticalSpacing*2,
                                                                      textHeight)];
     contentLabel.numberOfLines = 0;
@@ -103,32 +106,32 @@ static const CGFloat SMControlViewHorizontalSpacing = 15.0f;
     
     if (confirmButton) {
         self.frame = CGRectMake((screenWidth - SMControlViewWidth)/2,
-                                (screenHeight-90-textHeight-SMControlViewHorizontalSpacing*3-SMControlViewButtonHeight-0.5)/2,
+                                (screenHeight-imgH-textHeight-SMControlViewHorizontalSpacing*3-SMControlViewButtonHeight-0.5)/2,
                                 SMControlViewWidth,
-                                textHeight+90+SMControlViewHorizontalSpacing*3+SMControlViewButtonHeight+0.5);
+                                textHeight+imgH+SMControlViewHorizontalSpacing*3+SMControlViewButtonHeight+0.5);
         
-        UIView *horizontalLineView = [[UIView alloc]initWithFrame:CGRectMake(0, textHeight+SMControlViewHorizontalSpacing*3+90, SMControlViewWidth, 0.5)];
+        UIView *horizontalLineView = [[UIView alloc]initWithFrame:CGRectMake(0, textHeight+SMControlViewHorizontalSpacing*3+imgH, SMControlViewWidth, 0.5)];
         
         [horizontalLineView setBackgroundColor:[UIColor colorWithRed:131/255.0 green:146/255.0 blue:165/255.0 alpha:0.5]];
         
         [self addSubview:horizontalLineView];
         if (cancleButton) {
-            cancleButton.frame = CGRectMake(0, 90+textHeight+SMControlViewHorizontalSpacing*3+0.5, SMControlViewWidth/2, SMControlViewButtonHeight);
+            cancleButton.frame = CGRectMake(0, imgH+textHeight+SMControlViewHorizontalSpacing*3+0.5, SMControlViewWidth/2, SMControlViewButtonHeight);
             [self addSubview:confirmButton];
-            confirmButton.frame = CGRectMake(SMControlViewWidth/2, 90+textHeight+SMControlViewHorizontalSpacing*3+0.5, SMControlViewWidth/2, SMControlViewButtonHeight);
+            confirmButton.frame = CGRectMake(SMControlViewWidth/2, imgH+textHeight+SMControlViewHorizontalSpacing*3+0.5, SMControlViewWidth/2, SMControlViewButtonHeight);
             [self addSubview:cancleButton];
-            UIView *verticalLineView = [[UIView alloc]initWithFrame:CGRectMake(SMControlViewWidth/2-0.25, 90+textHeight+SMControlViewHorizontalSpacing*3+0.5, 0.5, SMControlViewButtonHeight)];
+            UIView *verticalLineView = [[UIView alloc]initWithFrame:CGRectMake(SMControlViewWidth/2-0.25, imgH+textHeight+SMControlViewHorizontalSpacing*3+0.5, 0.5, SMControlViewButtonHeight)];
             [verticalLineView setBackgroundColor:[UIColor colorWithRed:131/255.0 green:146/255.0 blue:165/255.0 alpha:0.5]];
             [self addSubview:verticalLineView];
         }else{
-            confirmButton.frame = CGRectMake(0, 90+textHeight+SMControlViewHorizontalSpacing*3+0.5, SMControlViewWidth, SMControlViewButtonHeight);
+            confirmButton.frame = CGRectMake(0, imgH+textHeight+SMControlViewHorizontalSpacing*3+0.5, SMControlViewWidth, SMControlViewButtonHeight);
             [self addSubview:confirmButton];
         }
     }else{
         self.frame = CGRectMake((screenWidth - SMControlViewWidth)/2,
                                 (screenHeight-textHeight-SMControlViewHorizontalSpacing*2-SMControlViewButtonHeight)/2,
                                 SMControlViewWidth,
-                                90+textHeight+SMControlViewHorizontalSpacing*3);
+                                imgH+textHeight+SMControlViewHorizontalSpacing*3);
     }
     [self addSubview:imageView];
     [self addSubview:contentLabel];
