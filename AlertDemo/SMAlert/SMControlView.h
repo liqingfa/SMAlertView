@@ -14,6 +14,8 @@
 @property (strong ,nonatomic) UIFont *contentFont UI_APPEARANCE_SELECTOR;                    // default is 15
 @property (assign ,nonatomic) CGFloat lineSpace UI_APPEARANCE_SELECTOR;                      // default is 4
 @property (strong ,nonatomic) UIColor *lineColor UI_APPEARANCE_SELECTOR;
+@property (assign ,nonatomic) NSTextAlignment contentTextAlignment UI_APPEARANCE_SELECTOR;    // default is NSTextAlignmentLeft
+
 -(void)setupContent:(NSString*)content confirmButton:(SMButton*)confirmButton cancleButton:(SMButton*)cancleButton;
 -(void)setupImage:(UIImage*)image content:(NSString*)content confirmButton:(SMButton*)confirmButton cancleButton:(SMButton*)cancleButton;
 @end

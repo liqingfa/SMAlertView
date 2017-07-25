@@ -9,6 +9,9 @@
 #import "SMAlert.h"
 #import "SMControlView.h"
 
+typedef void (^ShowaAtion)(void);
+
+
 @interface SMAlert()
 
 @property (nonatomic, strong) UIButton *backgroundView;
@@ -18,6 +21,10 @@
 @property (nonatomic, strong) SMControlView *controlView;
 
 @property (nonatomic, strong) SMAlertButtonClickAction hideCompletionBlock;
+
+@property (nonatomic, strong) NSMutableArray<ShowaAtion>* showArray;
+
+@property (nonatomic, assign) BOOL isVisible;
 @end
 
 @implementation SMAlert
@@ -27,6 +34,7 @@
     static SMAlert *sharedView;
     dispatch_once(&once, ^{
         sharedView = [[self alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+        sharedView.showArray = [NSMutableArray new];
     });
     return sharedView;
 }
@@ -58,62 +66,73 @@
 
 
 - (void)showImage:(UIImage*)image content:(NSString*)content confirmButton:(SMButton*)confirmButton cancleButton:(SMButton*)cancleButton {
-    self.backgroundView = [UIButton new];
-    self.backgroundView.frame = self.bounds;
-    self.backgroundView.backgroundColor = [UIColor clearColor];
-    [self addSubview:self.backgroundView];
-    [self.frontWindow addSubview:self];
+    __weak SMAlert *weakSelf = self;
+    ShowaAtion action = ^{
+        __strong SMAlert *strongSelf = weakSelf;
+        strongSelf.backgroundView = [UIButton new];
+        strongSelf.backgroundView.frame = strongSelf.bounds;
+        strongSelf.backgroundView.backgroundColor = [UIColor clearColor];
+        [strongSelf addSubview:strongSelf.backgroundView];
+        [strongSelf.frontWindow addSubview:strongSelf];
+        
+        if (![strongSelf.alertBackgroundColor isEqual:[UIColor clearColor]]) {
+            [UIView animateWithDuration:strongSelf.fadeInAnimationDuration animations:^{
+                strongSelf.backgroundView.backgroundColor = strongSelf.alertBackgroundColor;
+            }];
+        }
+        if (!confirmButton || strongSelf.touchToHide) {
+            //only content or allow touch to hide
+            [strongSelf.backgroundView addTarget:strongSelf action:@selector(hide) forControlEvents:UIControlEventTouchUpInside];
+        }
+        if (!confirmButton && cancleButton) {
+            NSAssert(NO,@"如果只需要一个按钮，请使用confirmButton");
+        }
+        if (confirmButton) {
+            [confirmButton setBackgroundColor:strongSelf.confirmBtBackgroundColor];
+            [confirmButton setTitleColor:strongSelf.confirmBtTitleColor forState:UIControlStateNormal];
+            [confirmButton.titleLabel setFont:strongSelf.btTitleFont];
+        }
+        if (cancleButton) {
+            [cancleButton setBackgroundColor:strongSelf.cancleBtBackgroundColor];
+            [cancleButton setTitleColor:strongSelf.cancleBtTitleColor forState:UIControlStateNormal];
+            [cancleButton.titleLabel setFont:strongSelf.btTitleFont];
+        }
+        
+        strongSelf.controlView = [SMControlView new];
+        strongSelf.controlView.contentTextColor = strongSelf.contentTextColor;
+        strongSelf.controlView.contentFont = strongSelf.contentFont;
+        strongSelf.controlView.lineSpace = strongSelf.contentLineSpace;
+        strongSelf.controlView.contentTextAlignment = strongSelf.contentTextAlignment;
+        
+        [strongSelf.controlView setupImage:image content:content confirmButton:confirmButton cancleButton:cancleButton];
+        
+        [strongSelf addSubview:strongSelf.controlView];
+        
+        CABasicAnimation *animaitonX = [CABasicAnimation animationWithKeyPath:@"transform.scale.x"];
+        animaitonX.removedOnCompletion = NO;
+        animaitonX.fromValue = @1.1;
+        animaitonX.toValue = @1;
+        animaitonX.duration = strongSelf.fadeInAnimationDuration;
+        [strongSelf.controlView.layer addAnimation:animaitonX forKey:nil];
+        CABasicAnimation *animaitonY = [CABasicAnimation animationWithKeyPath:@"transform.scale.y"];
+        animaitonY.removedOnCompletion = NO;
+        animaitonY.fromValue = @1.1;
+        animaitonY.toValue = @1;
+        animaitonY.duration = strongSelf.fadeInAnimationDuration;
+        [strongSelf.controlView.layer addAnimation:animaitonY forKey:nil];
+        CABasicAnimation *animaitonAlpha = [CABasicAnimation animationWithKeyPath:@"alpha"];
+        animaitonAlpha.removedOnCompletion = NO;
+        animaitonAlpha.fromValue = @0.5;
+        animaitonAlpha.toValue = @1;
+        animaitonAlpha.duration = strongSelf.fadeInAnimationDuration;
+        [strongSelf.controlView.layer addAnimation:animaitonAlpha forKey:nil];
+    };
     
-    if (![self.alertBackgroundColor isEqual:[UIColor clearColor]]) {
-        [UIView animateWithDuration:self.fadeInAnimationDuration animations:^{
-            self.backgroundView.backgroundColor = self.alertBackgroundColor;
-        }];
+    [self.showArray addObject:action];
+    if (!self.isVisible) {
+        self.showArray.firstObject();
+        self.isVisible = YES;
     }
-    if (!confirmButton || self.touchToHide) {
-        //only content or allow touch to hide
-        [self.backgroundView addTarget:self action:@selector(hide) forControlEvents:UIControlEventTouchUpInside];
-    }
-    if (!confirmButton && cancleButton) {
-        NSAssert(NO,@"如果只需要一个按钮，请使用confirmButton");
-    }
-    if (confirmButton) {
-        [confirmButton setBackgroundColor:self.confirmBtBackgroundColor];
-        [confirmButton setTitleColor:self.confirmBtTitleColor forState:UIControlStateNormal];
-        [confirmButton.titleLabel setFont:self.btTitleFont];
-    }
-    if (cancleButton) {
-        [cancleButton setBackgroundColor:self.cancleBtBackgroundColor];
-        [cancleButton setTitleColor:self.cancleBtTitleColor forState:UIControlStateNormal];
-        [cancleButton.titleLabel setFont:self.btTitleFont];
-    }
-    
-    self.controlView = [SMControlView new];
-    self.controlView.contentTextColor = self.contentTextColor;
-    self.controlView.contentFont = self.contentFont;
-    self.controlView.lineSpace = self.contentLineSpace;
-    
-    [self.controlView setupImage:image content:content confirmButton:confirmButton cancleButton:cancleButton];
-    
-    [self addSubview:self.controlView];
-    
-    CABasicAnimation *animaitonX = [CABasicAnimation animationWithKeyPath:@"transform.scale.x"];
-    animaitonX.removedOnCompletion = NO;
-    animaitonX.fromValue = @1.1;
-    animaitonX.toValue = @1;
-    animaitonX.duration = self.fadeInAnimationDuration;
-    [self.controlView.layer addAnimation:animaitonX forKey:nil];
-    CABasicAnimation *animaitonY = [CABasicAnimation animationWithKeyPath:@"transform.scale.y"];
-    animaitonY.removedOnCompletion = NO;
-    animaitonY.fromValue = @1.1;
-    animaitonY.toValue = @1;
-    animaitonY.duration = self.fadeInAnimationDuration;
-    [self.controlView.layer addAnimation:animaitonY forKey:nil];
-    CABasicAnimation *animaitonAlpha = [CABasicAnimation animationWithKeyPath:@"alpha"];
-    animaitonAlpha.removedOnCompletion = NO;
-    animaitonAlpha.fromValue = @0.5;
-    animaitonAlpha.toValue = @1;
-    animaitonAlpha.duration = self.fadeInAnimationDuration;
-    [self.controlView.layer addAnimation:animaitonAlpha forKey:nil];
 }
 
 + (void)hide {
@@ -128,6 +147,13 @@
     if ([SMAlert sharedView].hideCompletionBlock) {
         [SMAlert sharedView].hideCompletionBlock();
         [SMAlert sharedView].hideCompletionBlock = nil;
+    }
+    [SMAlert sharedView].isVisible = NO;
+    [[SMAlert sharedView].showArray removeObjectAtIndex:0];
+    if ([SMAlert sharedView].showArray.count != 0) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [SMAlert sharedView].showArray.firstObject();
+        });
     }
 }
 
@@ -152,8 +178,8 @@
         self.contentLineSpace = 4.0;
         self.contentFont = [UIFont systemFontOfSize:15.0];
         self.btTitleFont = [UIFont systemFontOfSize:15.0];
-        self.autoHideTimeInterval = 3.0;
         self.touchToHide = NO;
+        self.contentTextAlignment = NSTextAlignmentLeft;
     }
     return self;
 }
@@ -173,42 +199,72 @@
 #pragma mark - UIAppearance Setters
 
 + (void)setFadeInAnimationDuration:(NSTimeInterval)duration {
+    if (duration==0) {
+        return;
+    }
     [SMAlert sharedView].fadeInAnimationDuration = duration;
 }
 
 + (void)setFadeOutAnimationDuration:(NSTimeInterval)duration {
+    if (duration==0) {
+        return;
+    }
     [SMAlert sharedView].fadeOutAnimationDuration = duration;
 }
 
 + (void)setAlertBackgroundColor:(UIColor*)color {
+    if (!color) {
+        return;
+    }
     [SMAlert sharedView].alertBackgroundColor = color;
 }
 
 + (void)setConfirmBtBackgroundColor:(UIColor*)color {
+    if (!color) {
+        return;
+    }
     [SMAlert sharedView].confirmBtBackgroundColor = color;
 }
 
 + (void)setCancleBtBackgroundColor:(UIColor*)color {
+    if (!color) {
+        return;
+    }
     [SMAlert sharedView].cancleBtBackgroundColor = color;
 }
 
 + (void)setConfirmBtTitleColor:(UIColor*)color {
+    if (!color) {
+        return;
+    }
     [SMAlert sharedView].confirmBtTitleColor = color;
 }
 
 + (void)setCancleBtTitleColor:(UIColor*)color {
+    if (!color) {
+        return;
+    }
     [SMAlert sharedView].cancleBtTitleColor = color;
 }
 
 + (void)setContentFont:(UIFont*)font {
+    if (!font) {
+        return;
+    }
     [SMAlert sharedView].contentFont = font;
 }
 
 + (void)setContentTextColor:(UIColor*)color {
+    if (!color) {
+        return;
+    }
     [SMAlert sharedView].contentTextColor = color;
 }
 
 + (void)setBtTitleFont:(UIFont*)font {
+    if (!font) {
+        return;
+    }
     [SMAlert sharedView].btTitleFont = font;
 }
 
@@ -220,7 +276,7 @@
     [SMAlert sharedView].touchToHide = touchToHide;
 }
 
-+ (void)setAutoHideTimeInterval:(NSTimeInterval)autoHideTimeInterval {
-    [SMAlert sharedView].autoHideTimeInterval = autoHideTimeInterval;
++ (void)setContentTextAlignment:(NSTextAlignment)textAlignment {
+    [SMAlert sharedView].contentTextAlignment = textAlignment;
 }
 @end

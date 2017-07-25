@@ -20,14 +20,13 @@
 @property (strong, nonatomic) UIColor *confirmBtTitleColor UI_APPEARANCE_SELECTOR;             // default is black
 @property (strong, nonatomic) UIColor *cancleBtTitleColor UI_APPEARANCE_SELECTOR;              // default is black
 @property (strong, nonatomic) UIColor *contentTextColor UI_APPEARANCE_SELECTOR;                // default is black
-@property (strong ,nonatomic) UIFont *contentFont UI_APPEARANCE_SELECTOR;                      // default is 15
-@property (assign ,nonatomic) CGFloat contentLineSpace UI_APPEARANCE_SELECTOR;                 // default is 4.0
-@property (strong ,nonatomic) UIFont *btTitleFont UI_APPEARANCE_SELECTOR;                      // default is 15
+@property (strong, nonatomic) UIFont *contentFont UI_APPEARANCE_SELECTOR;                      // default is 15
+@property (assign, nonatomic) CGFloat contentLineSpace UI_APPEARANCE_SELECTOR;                 // default is 4.0
+@property (strong, nonatomic) UIFont *btTitleFont UI_APPEARANCE_SELECTOR;                      // default is 15
+@property (assign, nonatomic) NSTextAlignment contentTextAlignment UI_APPEARANCE_SELECTOR;     // default is NSTextAlignmentLeft
 
 
-@property (assign ,nonatomic) BOOL touchToHide ;                         // default is NO except [SMAlert showContent:content] && [ZMAlert showImage:image content:content]
-@property (assign ,nonatomic) NSTimeInterval autoHideTimeInterval;      // default is 3 only used [SMAlert showContent:content] && [ZMAlert showImage:image content:content]
-
+@property (assign ,nonatomic) BOOL touchToHide ; // default is NO except [SMAlert showContent:content] && [ZMAlert showImage:image content:content]
 
 + (void)setFadeInAnimationDuration:(NSTimeInterval)duration;
 + (void)setFadeOutAnimationDuration:(NSTimeInterval)duration;
@@ -42,17 +41,24 @@
 + (void)setBtTitleFont:(UIFont*)font;
 + (void)setContentLineSpace:(CGFloat)lineSpace;
 + (void)setTouchToHide:(BOOL)touchToHide;
-+ (void)setAutoHideTimeInterval:(NSTimeInterval)autoHideTimeInterval;
++ (void)setContentTextAlignment:(NSTextAlignment)textAlignment;
 
-
+// 只显示文字
 + (void)showContent:(NSString*)content;
+// 显示文字和一个确认
 + (void)showContent:(NSString*)content confirmButton:(SMButton*)confirmButton;
+// 显示文字和一个确认一个取消
 + (void)showContent:(NSString*)content confirmButton:(SMButton*)confirmButton cancleButton:(SMButton*)cancleButton;
 
+// 显示一张图片和文字
 + (void)showImage:(UIImage*)image content:(NSString*)content;
+// 显示一张图片，文字，确认
 + (void)showImage:(UIImage*)image content:(NSString*)content confirmButton:(SMButton*)confirmButton;
+// 显示一张图片，文字，确认，取消
 + (void)showImage:(UIImage*)image content:(NSString*)content confirmButton:(SMButton*)confirmButton cancleButton:(SMButton*)cancleButton;
 
+// 隐藏Alert方法
 +(void)hide;
+// 这个block在Alert完全隐藏后执行，可以放入你的相关操作，并在执行完成之后自动置为nil，不会影响接下来的行为
 +(void)hideCompletion:(void (^)(void))completion;
 @end

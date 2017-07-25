@@ -32,6 +32,8 @@ static const CGFloat SMControlViewHorizontalSpacing = 15.0f;
 
 -(void)setupContent:(NSString*)content confirmButton:(SMButton*)confirmButton cancleButton:(SMButton*)cancleButton{
     
+    content=content?:@"";
+    
     CGFloat textHeight = [self contentHeight:content];
     
     UILabel *contentLabel = [[UILabel alloc]initWithFrame:CGRectMake(SMControlViewVerticalSpacing,
@@ -43,6 +45,7 @@ static const CGFloat SMControlViewHorizontalSpacing = 15.0f;
                                                                  attributes:@{NSFontAttributeName: self.contentFont,
                                                                               NSForegroundColorAttributeName:self.contentTextColor,
                                                                               NSParagraphStyleAttributeName:[self paragraphStyle]}];
+    contentLabel.textAlignment = self.contentTextAlignment;
     
     if (confirmButton) {
         self.frame = CGRectMake((screenWidth - SMControlViewWidth)/2,
@@ -102,7 +105,7 @@ static const CGFloat SMControlViewHorizontalSpacing = 15.0f;
                                                                  attributes:@{NSFontAttributeName: self.contentFont,
                                                                               NSForegroundColorAttributeName:self.contentTextColor,
                                                                               NSParagraphStyleAttributeName:[self paragraphStyle]}];
-    contentLabel.textAlignment = NSTextAlignmentCenter;
+    contentLabel.textAlignment = self.contentTextAlignment;
     
     if (confirmButton) {
         self.frame = CGRectMake((screenWidth - SMControlViewWidth)/2,
