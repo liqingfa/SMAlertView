@@ -157,7 +157,7 @@ typedef void (^ShowaAtion)(void);
     }
 }
 
-+(void)hideCompletion:(SMAlertButtonClickAction)completion {
++ (void)hideCompletion:(SMAlertButtonClickAction)completion {
     [SMAlert sharedView].hideCompletionBlock = completion;
 }
 

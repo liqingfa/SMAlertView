@@ -15,7 +15,7 @@
 
 @implementation SMButton
 
-+(instancetype)initWithTitle:(NSString*)title clickAction:(SMAlertButtonClickAction)action {
++ (instancetype)initWithTitle:(NSString*)title clickAction:(SMAlertButtonClickAction)action {
     SMButton *button = [SMButton new];
     [button setTitle:title forState:UIControlStateNormal];
     [button setAction:action];

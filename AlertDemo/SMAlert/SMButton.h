@@ -12,6 +12,6 @@ typedef void (^SMAlertButtonClickAction)(void);
 
 @interface SMButton : UIButton
 
-+(instancetype)initWithTitle:(NSString*)title clickAction:(SMAlertButtonClickAction)action;
++ (instancetype)initWithTitle:(NSString*)title clickAction:(SMAlertButtonClickAction)action;
 
 @end

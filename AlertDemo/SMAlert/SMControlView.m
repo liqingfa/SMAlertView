@@ -21,7 +21,7 @@ static const CGFloat SMControlViewHorizontalSpacing = 15.0f;
 @end
 
 @implementation SMControlView
--(instancetype)init{
+- (instancetype)init {
     if (self = [super init]) {
         self.backgroundColor = [UIColor whiteColor];
         screenWidth = [[UIScreen mainScreen] bounds].size.width;
@@ -30,7 +30,7 @@ static const CGFloat SMControlViewHorizontalSpacing = 15.0f;
     return self;
 }
 
--(void)setupContent:(NSString*)content confirmButton:(SMButton*)confirmButton cancleButton:(SMButton*)cancleButton{
+- (void)setupContent:(NSString*)content confirmButton:(SMButton*)confirmButton cancleButton:(SMButton*)cancleButton {
     
     content=content?:@"";
     
@@ -82,7 +82,7 @@ static const CGFloat SMControlViewHorizontalSpacing = 15.0f;
     self.layer.masksToBounds = YES;
 }
 
--(void)setupImage:(UIImage*)image content:(NSString*)content confirmButton:(SMButton*)confirmButton cancleButton:(SMButton*)cancleButton {
+- (void)setupImage:(UIImage*)image content:(NSString*)content confirmButton:(SMButton*)confirmButton cancleButton:(SMButton*)cancleButton {
     if (!image) {
         [self setupContent:content confirmButton:confirmButton cancleButton:cancleButton];
         return;
@@ -142,7 +142,7 @@ static const CGFloat SMControlViewHorizontalSpacing = 15.0f;
     self.layer.masksToBounds = YES;
 }
 
--(CGFloat)contentHeight:(NSString*)content {
+- (CGFloat)contentHeight:(NSString*)content {
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
     [paragraphStyle setLineSpacing:self.lineSpace];
     return [content boundingRectWithSize:CGSizeMake(SMControlViewWidth-20, MAXFLOAT)
@@ -151,7 +151,7 @@ static const CGFloat SMControlViewHorizontalSpacing = 15.0f;
                           context:nil].size.height;
 }
 
--(NSMutableParagraphStyle*)paragraphStyle{
+- (NSMutableParagraphStyle*)paragraphStyle {
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
     [paragraphStyle setLineSpacing:self.lineSpace];
     return paragraphStyle;
