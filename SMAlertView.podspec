@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "SMAlertView"
-  s.version      = "0.0.5"
+  s.version      = "0.0.6"
   s.summary      = "简洁易用的警示框"
 
   # This description is used to generate tags and improve search results.
