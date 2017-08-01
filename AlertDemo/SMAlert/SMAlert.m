@@ -51,7 +51,6 @@ typedef void (^ShowaAtion)(void);
     [[SMAlert sharedView] showImage:nil content:content confirmButton:confirmButton cancleButton:cancleButton];
 }
 
-
 + (void)showImage:(UIImage*)image content:(NSString*)content {
     [SMAlert showImage:image content:content confirmButton:nil];
 }
@@ -63,7 +62,6 @@ typedef void (^ShowaAtion)(void);
 + (void)showImage:(UIImage*)image content:(NSString*)content confirmButton:(SMButton*)confirmButton cancleButton:(SMButton*)cancleButton {
     [[SMAlert sharedView] showImage:image content:content confirmButton:confirmButton cancleButton:cancleButton];
 }
-
 
 - (void)showImage:(UIImage*)image content:(NSString*)content confirmButton:(SMButton*)confirmButton cancleButton:(SMButton*)cancleButton {
     __weak SMAlert *weakSelf = self;
@@ -164,6 +162,7 @@ typedef void (^ShowaAtion)(void);
 - (void)hide {
     [SMAlert hide];
 }
+
 #pragma mark - initWithFrame
 - (instancetype)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {
