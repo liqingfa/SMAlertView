@@ -6,7 +6,7 @@
 
 `SMAlertView` is a clean and easy-to-use AlertView on iOS.
 
-![SMAlert](http://obon901vh.bkt.clouddn.com/smalert1.gif)![SMAlert](http://obon901vh.bkt.clouddn.com/smalert2.gif)
+![SMAlert](http://obon901vh.bkt.clouddn.com/2017-08-03%2018_02_18.gif)
 
 
 
