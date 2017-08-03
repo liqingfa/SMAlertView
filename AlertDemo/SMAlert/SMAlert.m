@@ -134,6 +134,9 @@ typedef void (^ShowaAtion)(void);
 }
 
 + (void)hide {
+    if ([SMAlert sharedView].isVisible == NO) {
+        return;
+    }
     [[SMAlert sharedView].backgroundView removeFromSuperview];
     [SMAlert sharedView].backgroundView = nil;
     
