@@ -6,7 +6,7 @@
 
 `SMAlertView` is a clean and easy-to-use AlertView on iOS.
 
-![SMAlert](http://obon901vh.bkt.clouddn.com/2017-08-03%2018_02_18.gif)
+![SMAlert](smalertview.gif)
 
 
 
@@ -17,7 +17,7 @@
 [CocoaPods](http://cocoapods.org) is a dependency manager for Objective-C, which automates and simplifies the process of using 3rd-party libraries like `SMAlertView` in your projects. First, add the following line to your [Podfile](http://guides.cocoapods.org/using/using-cocoapods.html):
 
 ```ruby
-pod 'SMAlertView', '~> 0.0.6'
+pod 'SMAlertView', '~> 0.0.7'
 ```
 
 Second, install `SMAlertView` into your project:
