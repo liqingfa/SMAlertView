@@ -124,12 +124,13 @@ typedef void (^ShowaAtion)(void);
         animaitonAlpha.toValue = @1;
         animaitonAlpha.duration = strongSelf.fadeInAnimationDuration;
         [strongSelf.controlView.layer addAnimation:animaitonAlpha forKey:nil];
+        
+        self.isVisible = YES;
     };
     
     [self.showArray addObject:action];
     if (!self.isVisible) {
         self.showArray.firstObject();
-        self.isVisible = YES;
     }
 }
 
