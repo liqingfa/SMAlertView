@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D37055AF1F3AEB9600F15B37 /* Reveal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D37055AE1F3AEB9600F15B37 /* Reveal.framework */; };
+		D37055B21F3AEC5000F15B37 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D37055B11F3AEC5000F15B37 /* libz.tbd */; };
 		D3ED0E061F20587500D48BE3 /* SMButton.m in Sources */ = {isa = PBXBuildFile; fileRef = D3ED0E051F20587500D48BE3 /* SMButton.m */; };
 		D3F57E261F1F28DE00969475 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D3F57E251F1F28DE00969475 /* main.m */; };
 		D3F57E291F1F28DE00969475 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D3F57E281F1F28DE00969475 /* AppDelegate.m */; };
@@ -19,6 +21,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D37055AE1F3AEB9600F15B37 /* Reveal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Reveal.framework; sourceTree = "<group>"; };
+		D37055B11F3AEC5000F15B37 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		D3ED0E041F20587500D48BE3 /* SMButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMButton.h; sourceTree = "<group>"; };
 		D3ED0E051F20587500D48BE3 /* SMButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMButton.m; sourceTree = "<group>"; };
 		D3F57E211F1F28DE00969475 /* AlertDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AlertDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -42,17 +46,28 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D37055B21F3AEC5000F15B37 /* libz.tbd in Frameworks */,
+				D37055AF1F3AEB9600F15B37 /* Reveal.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D37055B01F3AEC4F00F15B37 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D37055B11F3AEC5000F15B37 /* libz.tbd */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		D3F57E181F1F28DE00969475 = {
 			isa = PBXGroup;
 			children = (
 				D3F57E231F1F28DE00969475 /* AlertDemo */,
 				D3F57E221F1F28DE00969475 /* Products */,
+				D37055B01F3AEC4F00F15B37 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -76,6 +91,7 @@
 				D3F57E301F1F28DE00969475 /* Assets.xcassets */,
 				D3F57E321F1F28DE00969475 /* LaunchScreen.storyboard */,
 				D3F57E351F1F28DE00969475 /* Info.plist */,
+				D37055AE1F3AEB9600F15B37 /* Reveal.framework */,
 				D3F57E241F1F28DE00969475 /* Supporting Files */,
 			);
 			path = AlertDemo;
@@ -302,9 +318,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = D26X3EKB4E;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/AlertDemo",
+				);
 				INFOPLIST_FILE = AlertDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = "-ObjC";
+				"OTHER_LDFLAGS[arch=*]" = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.zhangmai.AlertDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "53f8fcd7-8391-4c56-8f89-7cc86312d8dd";
@@ -317,9 +339,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = D26X3EKB4E;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/AlertDemo",
+				);
 				INFOPLIST_FILE = AlertDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.zhangmai.AlertDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "53f8fcd7-8391-4c56-8f89-7cc86312d8dd";

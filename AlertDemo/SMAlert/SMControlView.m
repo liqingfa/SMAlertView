@@ -7,6 +7,7 @@
 //
 
 #import "SMControlView.h"
+#import <math.h>
 
 static const CGFloat SMControlViewWidth = 280.0f;
 static const CGFloat SMControlViewButtonHeight = 45.0f;
@@ -17,6 +18,7 @@ static const CGFloat SMControlViewHorizontalSpacing = 15.0f;
 @interface SMControlView(){
     CGFloat screenWidth;
     CGFloat screenHeight;
+    UIColor *_lineColor;
 }
 @end
 
@@ -26,6 +28,7 @@ static const CGFloat SMControlViewHorizontalSpacing = 15.0f;
         self.backgroundColor = [UIColor whiteColor];
         screenWidth = [[UIScreen mainScreen] bounds].size.width;
         screenHeight = [[UIScreen mainScreen] bounds].size.height;
+        _lineColor = [UIColor colorWithRed:131/255.0 green:146/255.0 blue:165/255.0 alpha:0.5];
     }
     return self;
 }
@@ -33,13 +36,10 @@ static const CGFloat SMControlViewHorizontalSpacing = 15.0f;
 - (void)setupContent:(NSString*)content confirmButton:(SMButton*)confirmButton cancleButton:(SMButton*)cancleButton {
     
     content=content?:@"";
-    
     CGFloat textHeight = [self contentHeight:content];
     
-    UILabel *contentLabel = [[UILabel alloc]initWithFrame:CGRectMake(SMControlViewVerticalSpacing,
-                                                                     SMControlViewHorizontalSpacing,
-                                                                     SMControlViewWidth-SMControlViewVerticalSpacing*2,
-                                                                     textHeight)];
+    ///add contentLabel
+    UILabel *contentLabel = [[UILabel alloc]init];
     contentLabel.numberOfLines = 0;
     contentLabel.attributedText = [[NSAttributedString alloc]initWithString:content
                                                                  attributes:@{NSFontAttributeName: self.contentFont,
@@ -47,37 +47,61 @@ static const CGFloat SMControlViewHorizontalSpacing = 15.0f;
                                                                               NSParagraphStyleAttributeName:[self paragraphStyle]}];
     contentLabel.textAlignment = self.contentTextAlignment;
     
+    [self addView:contentLabel
+             left:SMControlViewVerticalSpacing
+              top:SMControlViewHorizontalSpacing
+            width:SMControlViewWidth-SMControlViewVerticalSpacing*2
+           height:textHeight];
+    
     if (confirmButton) {
-        self.frame = CGRectMake((screenWidth - SMControlViewWidth)/2,
-                                (screenHeight-textHeight-SMControlViewHorizontalSpacing*2-SMControlViewButtonHeight-0.5)/2,
-                                SMControlViewWidth,
-                                textHeight+SMControlViewHorizontalSpacing*2+SMControlViewButtonHeight+0.5);
         
-        UIView *horizontalLineView = [[UIView alloc]initWithFrame:CGRectMake(0, textHeight+SMControlViewHorizontalSpacing*2, SMControlViewWidth, 0.5)];
+        ///add horizontalLineView
+        UIView *horizontalLineView = [UIView new];
+        [horizontalLineView setBackgroundColor:_lineColor];
+        [self addView:horizontalLineView
+                 left:0
+                  top:textHeight+SMControlViewHorizontalSpacing*2
+                width:SMControlViewWidth
+               height:0.5];
         
-        [horizontalLineView setBackgroundColor:[UIColor colorWithRed:131/255.0 green:146/255.0 blue:165/255.0 alpha:0.5]];
-        
-        [self addSubview:horizontalLineView];
         if (cancleButton) {
-            cancleButton.frame = CGRectMake(0, textHeight+SMControlViewHorizontalSpacing*2+0.5, SMControlViewWidth/2, SMControlViewButtonHeight);
-            [self addSubview:confirmButton];
-            confirmButton.frame = CGRectMake(SMControlViewWidth/2, textHeight+SMControlViewHorizontalSpacing*2+0.5, SMControlViewWidth/2, SMControlViewButtonHeight);
-            [self addSubview:cancleButton];
-            UIView *verticalLineView = [[UIView alloc]initWithFrame:CGRectMake(SMControlViewWidth/2-0.25, textHeight+SMControlViewHorizontalSpacing*2+0.5, 0.5, SMControlViewButtonHeight)];
-            [verticalLineView setBackgroundColor:[UIColor colorWithRed:131/255.0 green:146/255.0 blue:165/255.0 alpha:0.5]];
-            [self addSubview:verticalLineView];
+            
+            ///add cancleButton
+            [self addView:cancleButton
+                     left:0
+                      top:textHeight+SMControlViewHorizontalSpacing*2+0.5
+                    width:SMControlViewWidth/2
+                   height:SMControlViewButtonHeight];
+            
+            ///add confirmButton
+            [self addView:confirmButton
+                     left:SMControlViewWidth/2
+                      top:textHeight+SMControlViewHorizontalSpacing*2+0.5
+                    width:SMControlViewWidth/2
+                   height:SMControlViewButtonHeight];
+            
+            ///add verticalLineView
+            UIView *verticalLineView = [UIView new];
+            [verticalLineView setBackgroundColor:_lineColor];
+            [self addView:verticalLineView
+                     left:SMControlViewWidth/2-0.25
+                      top:textHeight+SMControlViewHorizontalSpacing*2+0.5
+                    width:0.5
+                   height:SMControlViewButtonHeight];
         }else{
-            confirmButton.frame = CGRectMake(0, textHeight+SMControlViewHorizontalSpacing*2+0.5, SMControlViewWidth, SMControlViewButtonHeight);
-            [self addSubview:confirmButton];
+            
+            ///add  confirmButton
+            [self addView:confirmButton
+                     left:0
+                      top:textHeight+SMControlViewHorizontalSpacing*2+0.5
+                    width:SMControlViewWidth
+                   height:SMControlViewButtonHeight];
         }
+        [self setupViewSize:self width:SMControlViewWidth height:textHeight+SMControlViewHorizontalSpacing*2+SMControlViewButtonHeight+0.5];
     }else{
-        self.frame = CGRectMake((screenWidth - SMControlViewWidth)/2,
-                                (screenHeight-textHeight-SMControlViewHorizontalSpacing*2-SMControlViewButtonHeight)/2,
-                                SMControlViewWidth,
-                                textHeight+SMControlViewHorizontalSpacing*2);
+        [self setupViewSize:self width:SMControlViewWidth height:textHeight+SMControlViewHorizontalSpacing*2];
     }
     
-    [self addSubview:contentLabel];
     self.layer.cornerRadius = SMControlViewCornerRadius;
     self.layer.masksToBounds = YES;
 }
@@ -89,71 +113,164 @@ static const CGFloat SMControlViewHorizontalSpacing = 15.0f;
     }
     CGFloat imgH = image.size.height;
     CGFloat imgW = image.size.width;
+    CGFloat textHeight = [self contentHeight:content];
     
-    UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake((SMControlViewWidth-imgW)/2, SMControlViewHorizontalSpacing, imgW, imgH)];
+    ///add  imageView
+    UIImageView *imageView = [UIImageView new];
     imageView.contentMode = UIViewContentModeCenter;
     [imageView setImage:image];
+    [self addView:imageView
+             left:(SMControlViewWidth-imgW)/2
+              top:SMControlViewHorizontalSpacing
+            width:imgW
+           height:imgH];
     
-    CGFloat textHeight = [self contentHeight:content];
-    UILabel *contentLabel = [[UILabel alloc]initWithFrame:CGRectMake(SMControlViewVerticalSpacing,
-                                                                     SMControlViewHorizontalSpacing*2+imgH,
-                                                                     SMControlViewWidth-SMControlViewVerticalSpacing*2,
-                                                                     textHeight)];
+    ///add contentLabel
+    UILabel *contentLabel = [UILabel new];
     contentLabel.numberOfLines = 0;
-    
     contentLabel.attributedText = [[NSAttributedString alloc]initWithString:content
                                                                  attributes:@{NSFontAttributeName: self.contentFont,
                                                                               NSForegroundColorAttributeName:self.contentTextColor,
                                                                               NSParagraphStyleAttributeName:[self paragraphStyle]}];
     contentLabel.textAlignment = self.contentTextAlignment;
+    [self addView:contentLabel
+             left:SMControlViewVerticalSpacing
+              top:SMControlViewHorizontalSpacing*2+imgH
+            width:SMControlViewWidth-SMControlViewVerticalSpacing*2
+           height:textHeight];
     
     if (confirmButton) {
-        self.frame = CGRectMake((screenWidth - SMControlViewWidth)/2,
-                                (screenHeight-imgH-textHeight-SMControlViewHorizontalSpacing*3-SMControlViewButtonHeight-0.5)/2,
-                                SMControlViewWidth,
-                                textHeight+imgH+SMControlViewHorizontalSpacing*3+SMControlViewButtonHeight+0.5);
+        ///add horizontalLineView
+        UIView *horizontalLineView = [UIView new];
+        [horizontalLineView setBackgroundColor:_lineColor];
+        [self addView:horizontalLineView
+                 left:0
+                  top:textHeight+SMControlViewHorizontalSpacing*3+imgH
+                width:SMControlViewWidth
+               height:0.5];
         
-        UIView *horizontalLineView = [[UIView alloc]initWithFrame:CGRectMake(0, textHeight+SMControlViewHorizontalSpacing*3+imgH, SMControlViewWidth, 0.5)];
-        
-        [horizontalLineView setBackgroundColor:[UIColor colorWithRed:131/255.0 green:146/255.0 blue:165/255.0 alpha:0.5]];
-        
-        [self addSubview:horizontalLineView];
         if (cancleButton) {
-            cancleButton.frame = CGRectMake(0, imgH+textHeight+SMControlViewHorizontalSpacing*3+0.5, SMControlViewWidth/2, SMControlViewButtonHeight);
-            [self addSubview:confirmButton];
-            confirmButton.frame = CGRectMake(SMControlViewWidth/2, imgH+textHeight+SMControlViewHorizontalSpacing*3+0.5, SMControlViewWidth/2, SMControlViewButtonHeight);
-            [self addSubview:cancleButton];
-            UIView *verticalLineView = [[UIView alloc]initWithFrame:CGRectMake(SMControlViewWidth/2-0.25, imgH+textHeight+SMControlViewHorizontalSpacing*3+0.5, 0.5, SMControlViewButtonHeight)];
-            [verticalLineView setBackgroundColor:[UIColor colorWithRed:131/255.0 green:146/255.0 blue:165/255.0 alpha:0.5]];
-            [self addSubview:verticalLineView];
+            ///add cancleButton
+            [self addView:cancleButton
+                     left:0
+                      top:imgH+textHeight+SMControlViewHorizontalSpacing*3+0.5
+                    width:SMControlViewWidth/2
+                   height:SMControlViewButtonHeight];
+            ///add confirmButton
+            [self addView:confirmButton
+                     left:SMControlViewWidth/2
+                      top:imgH+textHeight+SMControlViewHorizontalSpacing*3+0.5
+                    width:SMControlViewWidth/2
+                   height:SMControlViewButtonHeight];
+            ///add verticalLineView
+            UIView *verticalLineView = [UIView new];
+            [verticalLineView setBackgroundColor:_lineColor];
+            [self addView:verticalLineView
+                     left:SMControlViewWidth/2-0.25
+                      top:imgH+textHeight+SMControlViewHorizontalSpacing*3+0.5
+                    width:0.5
+                   height:SMControlViewButtonHeight];
         }else{
-            confirmButton.frame = CGRectMake(0, imgH+textHeight+SMControlViewHorizontalSpacing*3+0.5, SMControlViewWidth, SMControlViewButtonHeight);
-            [self addSubview:confirmButton];
+            ///add confirmButton
+            [self addView:confirmButton
+                     left:0
+                      top:imgH+textHeight+SMControlViewHorizontalSpacing*3+0.5
+                    width:SMControlViewWidth
+                   height:SMControlViewButtonHeight];
         }
+        
+        [self setupViewSize:self width:SMControlViewWidth height:textHeight+imgH+SMControlViewHorizontalSpacing*3+SMControlViewButtonHeight+0.5];
     }else{
-        self.frame = CGRectMake((screenWidth - SMControlViewWidth)/2,
-                                (screenHeight-textHeight-SMControlViewHorizontalSpacing*2-SMControlViewButtonHeight)/2,
-                                SMControlViewWidth,
-                                imgH+textHeight+SMControlViewHorizontalSpacing*3);
+        [self setupViewSize:self width:SMControlViewWidth height:imgH+textHeight+SMControlViewHorizontalSpacing*3];
     }
-    [self addSubview:imageView];
-    [self addSubview:contentLabel];
     self.layer.cornerRadius = SMControlViewCornerRadius;
     self.layer.masksToBounds = YES;
 }
 
+- (void)addView:(UIView*)view left:(CGFloat)left top:(CGFloat)Top width:(CGFloat)width height:(CGFloat)height {
+    view.translatesAutoresizingMaskIntoConstraints = NO;
+    [self addSubview:view];
+    NSLayoutConstraint *leftConstraint = [NSLayoutConstraint constraintWithItem:view
+                                                                      attribute:NSLayoutAttributeLeft
+                                                                      relatedBy:NSLayoutRelationEqual
+                                                                         toItem:self
+                                                                      attribute:NSLayoutAttributeLeft
+                                                                     multiplier:1.0
+                                                                       constant:left];
+    
+    NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:view
+                                                                     attribute:NSLayoutAttributeTop
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTop
+                                                                    multiplier:1.0
+                                                                      constant:Top];
+    
+    NSLayoutConstraint *widthConstraint = [NSLayoutConstraint constraintWithItem:view
+                                                                       attribute:NSLayoutAttributeWidth
+                                                                       relatedBy:NSLayoutRelationEqual
+                                                                          toItem:nil
+                                                                       attribute:NSLayoutAttributeNotAnAttribute
+                                                                      multiplier:0.0
+                                                                        constant:width];
+    
+    NSLayoutConstraint *heightConstraint = [NSLayoutConstraint constraintWithItem:view
+                                                                        attribute:NSLayoutAttributeHeight
+                                                                        relatedBy:NSLayoutRelationEqual
+                                                                           toItem:nil
+                                                                        attribute:NSLayoutAttributeNotAnAttribute
+                                                                       multiplier:0.0
+                                                                         constant:height];
+    [self addConstraint:leftConstraint];
+    [self addConstraint:topConstraint];
+    [view addConstraint:widthConstraint];
+    [view addConstraint:heightConstraint];
+}
+
+- (void)setupViewSize:(UIView*)view width:(CGFloat)width height:(CGFloat)height {
+    view.translatesAutoresizingMaskIntoConstraints = NO;
+    NSLayoutConstraint *widthConstraint = [NSLayoutConstraint constraintWithItem:view
+                                                                       attribute:NSLayoutAttributeWidth
+                                                                       relatedBy:NSLayoutRelationEqual
+                                                                          toItem:nil
+                                                                       attribute:NSLayoutAttributeNotAnAttribute
+                                                                      multiplier:0.0
+                                                                        constant:width];
+    
+    NSLayoutConstraint *heightConstraint = [NSLayoutConstraint constraintWithItem:view
+                                                                        attribute:NSLayoutAttributeHeight
+                                                                        relatedBy:NSLayoutRelationEqual
+                                                                           toItem:nil
+                                                                        attribute:NSLayoutAttributeNotAnAttribute
+                                                                       multiplier:0.0
+                                                                         constant:height];
+    [view addConstraint:widthConstraint];
+    [view addConstraint:heightConstraint];
+}
+
+
 - (CGFloat)contentHeight:(NSString*)content {
+    
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
     [paragraphStyle setLineSpacing:self.lineSpace];
-    return [content boundingRectWithSize:CGSizeMake(SMControlViewWidth-20, MAXFLOAT)
-                          options:NSStringDrawingUsesLineFragmentOrigin
-                              attributes:@{NSFontAttributeName: self.contentFont,NSParagraphStyleAttributeName:paragraphStyle}
-                          context:nil].size.height;
+    
+    CGFloat contentHeight =[content boundingRectWithSize:CGSizeMake(SMControlViewWidth-20, MAXFLOAT)
+                                                 options:NSStringDrawingUsesLineFragmentOrigin
+                                              attributes:@{NSFontAttributeName: self.contentFont,NSParagraphStyleAttributeName:paragraphStyle}
+                                                 context:nil].size.height;
+    
+    CGFloat $h = fmodf(contentHeight, (NSInteger)contentHeight);
+    contentHeight -= $h;
+    contentHeight += $h==0.f?:1.0f;
+    
+    return contentHeight;
 }
 
 - (NSMutableParagraphStyle*)paragraphStyle {
+    
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
     [paragraphStyle setLineSpacing:self.lineSpace];
+    
     return paragraphStyle;
 }
 

@@ -105,6 +105,23 @@ typedef void (^ShowaAtion)(void);
         [strongSelf.controlView setupImage:image content:content confirmButton:confirmButton cancleButton:cancleButton];
         
         [strongSelf addSubview:strongSelf.controlView];
+        NSLayoutConstraint *leftConstraint = [NSLayoutConstraint constraintWithItem:strongSelf.controlView
+                                                                          attribute:NSLayoutAttributeCenterX
+                                                                          relatedBy:NSLayoutRelationEqual
+                                                                             toItem:self
+                                                                          attribute:NSLayoutAttributeLeft
+                                                                         multiplier:1.0
+                                                                           constant:self.frame.size.width/2];
+        
+        NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:strongSelf.controlView
+                                                                         attribute:NSLayoutAttributeCenterY
+                                                                         relatedBy:NSLayoutRelationEqual
+                                                                            toItem:self
+                                                                         attribute:NSLayoutAttributeTop
+                                                                        multiplier:1.0
+                                                                          constant:self.frame.size.height/2];
+        [self addConstraint:leftConstraint];
+        [self addConstraint:topConstraint];
         
         CABasicAnimation *animaitonX = [CABasicAnimation animationWithKeyPath:@"transform.scale.x"];
         animaitonX.removedOnCompletion = NO;
