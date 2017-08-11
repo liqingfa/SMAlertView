@@ -17,7 +17,7 @@
 [CocoaPods](http://cocoapods.org) is a dependency manager for Objective-C, which automates and simplifies the process of using 3rd-party libraries like `SMAlertView` in your projects. First, add the following line to your [Podfile](http://guides.cocoapods.org/using/using-cocoapods.html):
 
 ```ruby
-pod 'SMAlertView', '~> 0.0.9'
+pod 'SMAlertView', '~> 1.0.0'
 ```
 
 Second, install `SMAlertView` into your project:
@@ -56,6 +56,16 @@ If you'd like the AlertView with an image:
 + (void)showImage:(UIImage*)image content:(NSString*)content confirmButton:(SMButton*)confirmButton cancleButton:(SMButton*)cancleButton;
 ```
 
+In addition, you also can show the AlertView with a custom view:
+
+```objective-c
++ (void)showCustomView:(UIView*)view;
++ (void)showCustomView:(UIView*)view confirmButton:(SMButton*)confirmButton;
++ (void)showCustomView:(UIView*)view confirmButton:(SMButton*)confirmButton cancleButton:(SMButton*)cancleButton;
+```
+
+
+
 ### Dismissing the AlertView
 
 The AlertView can be dismissed using:
@@ -64,7 +74,7 @@ The AlertView can be dismissed using:
 +(void)hide;
 ```
 
-If you'd like to perform some action after the AlertView hide completion，then the block will be released:
+If you'd like to perform some action after the AlertView hide completion
 
 ```objective-c
 +(void)hideCompletion:(void (^)(void))completion;

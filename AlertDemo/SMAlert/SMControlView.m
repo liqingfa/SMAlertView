@@ -111,6 +111,7 @@ static const CGFloat SMControlViewHorizontalSpacing = 15.0f;
         [self setupContent:content confirmButton:confirmButton cancleButton:cancleButton];
         return;
     }
+    content=content?:@"";
     CGFloat imgH = image.size.height;
     CGFloat imgW = image.size.width;
     CGFloat textHeight = [self contentHeight:content];
@@ -182,6 +183,57 @@ static const CGFloat SMControlViewHorizontalSpacing = 15.0f;
         [self setupViewSize:self width:SMControlViewWidth height:textHeight+imgH+SMControlViewHorizontalSpacing*3+SMControlViewButtonHeight+0.5];
     }else{
         [self setupViewSize:self width:SMControlViewWidth height:imgH+textHeight+SMControlViewHorizontalSpacing*3];
+    }
+    self.layer.cornerRadius = SMControlViewCornerRadius;
+    self.layer.masksToBounds = YES;
+}
+
+- (void)setupCustomView:(UIView*)view confirmButton:(SMButton*)confirmButton cancleButton:(SMButton*)cancleButton {
+    CGSize customViewSize = view.frame.size;
+    [self addView:view left:0 top:0 width:customViewSize.width height:customViewSize.height];
+    if (confirmButton) {
+        ///add horizontalLineView
+        UIView *horizontalLineView = [UIView new];
+        [horizontalLineView setBackgroundColor:_lineColor];
+        [self addView:horizontalLineView
+                 left:0
+                  top:customViewSize.height
+                width:customViewSize.width
+               height:0.5];
+        
+        if (cancleButton) {
+            ///add cancleButton
+            [self addView:cancleButton
+                     left:0
+                      top:customViewSize.height+0.5
+                    width:customViewSize.width/2
+                   height:SMControlViewButtonHeight];
+            ///add confirmButton
+            [self addView:confirmButton
+                     left:customViewSize.width/2
+                      top:customViewSize.height+0.5
+                    width:customViewSize.width/2
+                   height:SMControlViewButtonHeight];
+            ///add verticalLineView
+            UIView *verticalLineView = [UIView new];
+            [verticalLineView setBackgroundColor:_lineColor];
+            [self addView:verticalLineView
+                     left:customViewSize.width/2-0.25
+                      top:customViewSize.height+0.5
+                    width:0.5
+                   height:SMControlViewButtonHeight];
+        }else{
+            ///add confirmButton
+            [self addView:confirmButton
+                     left:0
+                      top:customViewSize.height+0.5
+                    width:customViewSize.width
+                   height:SMControlViewButtonHeight];
+        }
+        
+        [self setupViewSize:self width:customViewSize.width height:customViewSize.height+SMControlViewButtonHeight+0.5];
+    }else{
+        [self setupViewSize:self width:customViewSize.width height:customViewSize.height];
     }
     self.layer.cornerRadius = SMControlViewCornerRadius;
     self.layer.masksToBounds = YES;

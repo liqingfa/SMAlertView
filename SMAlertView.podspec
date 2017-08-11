@@ -16,8 +16,8 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "SMAlertView"
-  s.version      = "0.0.9"
-  s.summary      = "简洁易用的警示框"
+  s.version      = "1.0.0"
+  s.summary      = "简洁易用的提示框"
 
   # This description is used to generate tags and improve search results.
   #   * Think: What does it do? Why did you write it? What is the focus?
@@ -25,7 +25,7 @@ Pod::Spec.new do |s|
   #   * Write the description between the DESC delimiters below.
   #   * Finally, don't worry about the indent, CocoaPods strips it!
   s.description  = <<-DESC
-  			简洁易用的警示框，可定制性比较强，支持多种样式
+  			简洁易用的提示框，可定制性比较强，支持多种样式
                    DESC
 
   s.homepage     = "https://github.com/liqingfa/SMAlertView"

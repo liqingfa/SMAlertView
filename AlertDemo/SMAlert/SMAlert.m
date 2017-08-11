@@ -48,7 +48,7 @@ typedef void (^ShowaAtion)(void);
 }
 
 + (void)showContent:(NSString*)content confirmButton:(SMButton*)confirmButton cancleButton:(SMButton*)cancleButton {
-    [[SMAlert sharedView] showImage:nil content:content confirmButton:confirmButton cancleButton:cancleButton];
+    [[SMAlert sharedView] showImage:nil content:content customView:nil confirmButton:confirmButton cancleButton:cancleButton];
 }
 
 + (void)showImage:(UIImage*)image content:(NSString*)content {
@@ -60,10 +60,22 @@ typedef void (^ShowaAtion)(void);
 }
 
 + (void)showImage:(UIImage*)image content:(NSString*)content confirmButton:(SMButton*)confirmButton cancleButton:(SMButton*)cancleButton {
-    [[SMAlert sharedView] showImage:image content:content confirmButton:confirmButton cancleButton:cancleButton];
+    [[SMAlert sharedView] showImage:image content:content customView:nil confirmButton:confirmButton cancleButton:cancleButton];
 }
 
-- (void)showImage:(UIImage*)image content:(NSString*)content confirmButton:(SMButton*)confirmButton cancleButton:(SMButton*)cancleButton {
++ (void)showCustomView:(UIView*)view {
+    [SMAlert showCustomView:view confirmButton:nil];
+}
+
++ (void)showCustomView:(UIView*)view confirmButton:(SMButton*)confirmButton {
+    [SMAlert showCustomView:view confirmButton:confirmButton cancleButton:nil];
+}
+
++ (void)showCustomView:(UIView*)view confirmButton:(SMButton*)confirmButton cancleButton:(SMButton*)cancleButton {
+    [[SMAlert sharedView] showImage:nil content:nil customView:view confirmButton:confirmButton cancleButton:cancleButton];
+}
+
+- (void)showImage:(UIImage*)image content:(NSString*)content customView:(UIView*)customView confirmButton:(SMButton*)confirmButton cancleButton:(SMButton*)cancleButton {
     __weak SMAlert *weakSelf = self;
     ShowaAtion action = ^{
         __strong SMAlert *strongSelf = weakSelf;
@@ -97,13 +109,15 @@ typedef void (^ShowaAtion)(void);
         }
         
         strongSelf.controlView = [SMControlView new];
-        strongSelf.controlView.contentTextColor = strongSelf.contentTextColor;
-        strongSelf.controlView.contentFont = strongSelf.contentFont;
-        strongSelf.controlView.lineSpace = strongSelf.contentLineSpace;
-        strongSelf.controlView.contentTextAlignment = strongSelf.contentTextAlignment;
-        
-        [strongSelf.controlView setupImage:image content:content confirmButton:confirmButton cancleButton:cancleButton];
-        
+        if (customView) {
+            [strongSelf.controlView setupCustomView:customView confirmButton:confirmButton cancleButton:cancleButton];
+        }else{
+            strongSelf.controlView.contentTextColor = strongSelf.contentTextColor;
+            strongSelf.controlView.contentFont = strongSelf.contentFont;
+            strongSelf.controlView.lineSpace = strongSelf.contentLineSpace;
+            strongSelf.controlView.contentTextAlignment = strongSelf.contentTextAlignment;
+            [strongSelf.controlView setupImage:image content:content confirmButton:confirmButton cancleButton:cancleButton];
+        }
         [strongSelf addSubview:strongSelf.controlView];
         NSLayoutConstraint *leftConstraint = [NSLayoutConstraint constraintWithItem:strongSelf.controlView
                                                                           attribute:NSLayoutAttributeCenterX
