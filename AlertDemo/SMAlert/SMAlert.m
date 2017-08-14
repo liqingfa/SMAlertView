@@ -24,6 +24,8 @@ typedef void (^ShowaAtion)(void);
 
 @property (nonatomic, strong) NSMutableArray<ShowaAtion>* showArray;
 
+@property (nonatomic, strong) NSMutableArray<void (^)(void)>* completionArray;
+
 @property (nonatomic, assign) BOOL isVisible;
 @end
 
@@ -35,6 +37,7 @@ typedef void (^ShowaAtion)(void);
     dispatch_once(&once, ^{
         sharedView = [[self alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
         sharedView.showArray = [NSMutableArray new];
+        sharedView.completionArray = [NSMutableArray new];
     });
     return sharedView;
 }
@@ -160,42 +163,47 @@ typedef void (^ShowaAtion)(void);
     };
     
     [self.showArray addObject:action];
+    [self.completionArray addObject:^{}];
+    
     if (!self.isVisible) {
         self.showArray.firstObject();
     }
 }
 
 + (void)hide {
-    if ([SMAlert sharedView].isVisible == NO) {
-        return;
-    }
-    [[SMAlert sharedView].backgroundView removeFromSuperview];
-    [SMAlert sharedView].backgroundView = nil;
-    
-    [[SMAlert sharedView].controlView removeFromSuperview];
-    [SMAlert sharedView].controlView = nil;
-    
-    [[SMAlert sharedView] removeFromSuperview];
-    
-    if ([SMAlert sharedView].hideCompletionBlock) {
-        [SMAlert sharedView].hideCompletionBlock();
-        [SMAlert sharedView].hideCompletionBlock = nil;
-    }
-    [SMAlert sharedView].isVisible = NO;
-    [[SMAlert sharedView].showArray removeObjectAtIndex:0];
-    if ([SMAlert sharedView].showArray.count != 0) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [SMAlert sharedView].showArray.firstObject();
-        });
-    }
+    [[SMAlert sharedView] hide];
 }
 
-+ (void)hideCompletion:(SMAlertButtonClickAction)completion {
-    [SMAlert sharedView].hideCompletionBlock = completion;
++ (void)hideCompletion:(void (^)(void))completion {
+    if (completion) {
+        [[SMAlert sharedView].completionArray replaceObjectAtIndex:[SMAlert sharedView].completionArray.count-1 withObject:completion];
+    }
 }
 
 - (void)hide {
-    [SMAlert hide];
+    if (self.isVisible == NO) {
+        return;
+    }
+    [self.backgroundView removeFromSuperview];
+    self.backgroundView = nil;
+    
+    [self.controlView removeFromSuperview];
+    self.controlView = nil;
+    
+    [self removeFromSuperview];
+    
+    self.completionArray.firstObject();
+    
+    self.isVisible = NO;
+    
+    [self.showArray removeObjectAtIndex:0];
+    [self.completionArray removeObjectAtIndex:0];
+    
+    if (self.showArray.count != 0) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            self.showArray.firstObject();
+        });
+    }
 }
 
 #pragma mark - initWithFrame
