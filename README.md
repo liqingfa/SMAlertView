@@ -52,7 +52,7 @@ If you'd like the AlertView with an image:
 
 ```objective-c
 + (void)showImage:(UIImage*)image content:(NSString*)content;
-+ (void)showImage:(UIImage*)image content:(NSString*)content confirmButton:		(SMButton*)confirmButton;
++ (void)showImage:(UIImage*)image content:(NSString*)content confirmButton:(SMButton*)confirmButton;
 + (void)showImage:(UIImage*)image content:(NSString*)content confirmButton:(SMButton*)confirmButton cancleButton:(SMButton*)cancleButton;
 ```
 
@@ -71,7 +71,8 @@ In addition, you also can show the AlertView with a custom view:
 The AlertView can be dismissed using:
 
 ```objective-c
-+(void)hide;
++(void)hide; 	//隐藏当前AlertView
++(void)hideAll; //隐藏当前AlertView并清空待显示队列
 ```
 
 If you'd like to perform some action after the AlertView hide completion
@@ -100,7 +101,6 @@ If you'd like to perform some action after the AlertView hide completion
 + (void)setContentLineSpace:(CGFloat)lineSpace;					// default is 4
 + (void)setTouchToHide:(BOOL)touchToHide;						// default is NO
 + (void)setContentTextAlignment:(NSTextAlignment)textAlignment;	// default is left
-
 ```
 
 

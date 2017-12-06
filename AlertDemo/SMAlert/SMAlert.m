@@ -171,7 +171,11 @@ typedef void (^ShowaAtion)(void);
 }
 
 + (void)hide {
-    [[SMAlert sharedView] hide];
+    [[SMAlert sharedView] hideAll:NO];
+}
+// 隐藏Alert并清除待显示队列
++(void)hideAll {
+    [[SMAlert sharedView] hideAll:YES];
 }
 
 + (void)hideCompletion:(void (^)(void))completion {
@@ -180,7 +184,7 @@ typedef void (^ShowaAtion)(void);
     }
 }
 
-- (void)hide {
+- (void)hideAll:(BOOL)isAll {
     if (self.isVisible == NO) {
         return;
     }
@@ -200,9 +204,13 @@ typedef void (^ShowaAtion)(void);
     [self.completionArray removeObjectAtIndex:0];
     
     if (self.showArray.count != 0) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            self.showArray.firstObject();
-        });
+        if (isAll) {
+            [self.showArray removeAllObjects];
+        }else{
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                self.showArray.firstObject();
+            });
+        }
     }
 }
 

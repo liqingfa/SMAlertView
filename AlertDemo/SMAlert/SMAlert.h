@@ -66,6 +66,8 @@
 
 // 隐藏Alert方法
 +(void)hide;
+// 隐藏Alert并清除待显示队列
++(void)hideAll;
 
 // 这个block在Alert完全隐藏后执行，可以放入你的相关操作，并在执行完成之后自动置为nil，不会影响接下来的行为
 +(void)hideCompletion:(void (^)(void))completion;
