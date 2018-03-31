@@ -17,7 +17,7 @@
 [CocoaPods](http://cocoapods.org) is a dependency manager for Objective-C, which automates and simplifies the process of using 3rd-party libraries like `SMAlertView` in your projects. First, add the following line to your [Podfile](http://guides.cocoapods.org/using/using-cocoapods.html):
 
 ```ruby
-pod 'SMAlertView', '~> 1.0.1'
+pod 'SMAlertView', '~> 1.0.2'
 ```
 
 Second, install `SMAlertView` into your project:
