@@ -55,11 +55,9 @@
         [SMAlert setContentTextAlignment:NSTextAlignmentLeft];
         if (indexPath.row == 0) {
             [SMAlert showContent:@"扈江离与辟芷兮，纫秋兰以为佩。汨余若将不及兮，恐年岁之不吾与。朝搴阰之木兰兮，夕揽洲之宿莽。日月忽其不淹兮，春与秋其代序。" confirmButton:[SMButton initWithTitle:@"确定" clickAction:^{
-                [SMAlert hide];
             }] cancleButton:[SMButton initWithTitle:@"取消" clickAction:nil]];
         }else if (indexPath.row == 1){
             [SMAlert showContent:@"扈江离与辟芷兮，纫秋兰以为佩。汨余若将不及兮，恐年岁之不吾与。朝搴阰之木兰兮，夕揽洲之宿莽。日月忽其不淹兮，春与秋其代序。" confirmButton:[SMButton initWithTitle:@"确定" clickAction:^{
-                [SMAlert hide];
             }]];
         }
     }else if(indexPath.section==1){
@@ -70,11 +68,9 @@
         [SMAlert setContentTextAlignment:NSTextAlignmentCenter];
         if (indexPath.row == 0){
             [SMAlert showImage:[UIImage imageNamed:@"shangpin_img_ticket"] content:@"扈江离与辟芷兮，纫秋兰以为佩。汨余若将不及兮，恐年岁之不吾与。朝搴阰之木兰兮，夕揽洲之宿莽。日月忽其不淹兮，春与秋其代序。" confirmButton:[SMButton initWithTitle:@"确定" clickAction:^{
-                [SMAlert hide];
             }] cancleButton:[SMButton initWithTitle:@"取消" clickAction:nil]];
         }else if(indexPath.row==1){
             [SMAlert showImage:[UIImage imageNamed:@"shangpin_img_ticket"] content:@"日月忽其不淹兮，春与秋其代序。" confirmButton:[SMButton initWithTitle:@"确定" clickAction:^{
-                [SMAlert hide];
             }]];
         }
     }else{
@@ -99,11 +95,9 @@
         
         if (indexPath.row == 0) {
             [SMAlert showCustomView:customView confirmButton:[SMButton initWithTitle:@"确定" clickAction:^{
-                [SMAlert hide];
             }] cancleButton:[SMButton initWithTitle:@"取消" clickAction:nil]];
         }else if (indexPath.row == 1){
             [SMAlert showCustomView:customView confirmButton:[SMButton initWithTitle:@"确定" clickAction:^{
-                [SMAlert hide];
             }]];
         }else if (indexPath.row == 2){
             [SMAlert showCustomView:customView];

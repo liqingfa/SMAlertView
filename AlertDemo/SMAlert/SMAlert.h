@@ -11,29 +11,17 @@
 
 @interface SMAlert : UIView
 
-
-
 + (void)setFadeInAnimationDuration:(NSTimeInterval)duration;
 + (void)setFadeOutAnimationDuration:(NSTimeInterval)duration;
-
 + (void)setAlertBackgroundColor:(UIColor*)color;
-
 + (void)setConfirmBtBackgroundColor:(UIColor*)color;
-
 + (void)setCancleBtBackgroundColor:(UIColor*)color;
-
 + (void)setConfirmBtTitleColor:(UIColor*)color;
-
 + (void)setCancleBtTitleColor:(UIColor*)color;
-
 + (void)setContentTextColor:(UIColor*)color;
-
 + (void)setContentFont:(UIFont*)font;
-
 + (void)setBtTitleFont:(UIFont*)font;
-
 + (void)setContentLineSpace:(CGFloat)lineSpace;
-
 + (void)setContentTextAlignment:(NSTextAlignment)textAlignment;
 
 // 显示文字和一个确认
@@ -52,6 +40,4 @@
 + (void)showCustomView:(UIView*)view confirmButton:(SMButton*)confirmButton;
 // 显示自定义view，确认，取消
 + (void)showCustomView:(UIView*)view confirmButton:(SMButton*)confirmButton cancleButton:(SMButton*)cancleButton;
-// 隐藏Alert方法
-+(void)hide;
 @end

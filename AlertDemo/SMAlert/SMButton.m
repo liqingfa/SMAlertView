@@ -7,15 +7,13 @@
 //
 
 #import "SMButton.h"
-#import "SMAlert.h"
-
 @interface SMButton()
-@property (strong, nonatomic) SMAlertButtonClickAction action;
+@property (strong, nonatomic) SMButtonClickAction action;
 @end
 
 @implementation SMButton
 
-+ (instancetype)initWithTitle:(NSString*)title clickAction:(SMAlertButtonClickAction)action {
++ (instancetype)initWithTitle:(NSString*)title clickAction:(SMButtonClickAction)action {
     SMButton *button = [SMButton new];
     [button setTitle:title forState:UIControlStateNormal];
     [button setAction:action];
@@ -23,11 +21,11 @@
     return button;
 }
 - (void)buttonClick {
-    if (self.action) {
-        self.action();
-    }else{
-        [SMAlert hide];
-    }
+    if (self.action) self.action();
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+    [NSClassFromString(@"SMAlert") performSelector:NSSelectorFromString(@"hide")];
+#pragma clang diagnostic pop
 }
 
 @end
