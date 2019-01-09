@@ -14,17 +14,23 @@ typedef void (^ShowaAtion)(void);
 
 @interface SMAlert()
 
+@property (assign, nonatomic) NSTimeInterval fadeInAnimationDuration;   // default is 0.15
+@property (assign, nonatomic) NSTimeInterval fadeOutAnimationDuration;  // default is 0.15
+@property (assign, nonatomic) NSTextAlignment contentTextAlignment;     // default is Left
+@property (strong, nonatomic) UIColor *alertBackgroundColor;            // default is clearclolr
+@property (strong, nonatomic) UIColor *confirmBtBackgroundColor;        // default is white
+@property (strong, nonatomic) UIColor *cancleBtBackgroundColor;         // default is white
+@property (strong, nonatomic) UIColor *confirmBtTitleColor;             // default is black
+@property (strong, nonatomic) UIColor *cancleBtTitleColor;              // default is black
+@property (strong, nonatomic) UIColor *contentTextColor;                // default is black
+@property (strong, nonatomic) UIFont *contentFont;                      // default is 15
+@property (assign, nonatomic) CGFloat contentLineSpace;                 // default is 4.0
+@property (strong, nonatomic) UIFont *btTitleFont;                      // default is 15
+
+
 @property (nonatomic, strong) UIButton *backgroundView;
-
 @property (nonatomic, readonly) UIWindow *frontWindow;
-
 @property (nonatomic, strong) SMControlView *controlView;
-
-@property (nonatomic, strong) SMAlertButtonClickAction hideCompletionBlock;
-
-@property (nonatomic, strong) NSMutableArray<ShowaAtion>* showArray;
-
-@property (nonatomic, strong) NSMutableArray<void (^)(void)>* completionArray;
 
 @property (nonatomic, assign) BOOL isVisible;
 @end
@@ -36,14 +42,8 @@ typedef void (^ShowaAtion)(void);
     static SMAlert *sharedView;
     dispatch_once(&once, ^{
         sharedView = [[self alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-        sharedView.showArray = [NSMutableArray new];
-        sharedView.completionArray = [NSMutableArray new];
     });
     return sharedView;
-}
-
-+ (void)showContent:(NSString*)content {
-    [SMAlert showContent:content confirmButton:nil];
 }
 
 + (void)showContent:(NSString*)content confirmButton:(SMButton*)confirmButton {
@@ -52,10 +52,6 @@ typedef void (^ShowaAtion)(void);
 
 + (void)showContent:(NSString*)content confirmButton:(SMButton*)confirmButton cancleButton:(SMButton*)cancleButton {
     [[SMAlert sharedView] showImage:nil content:content customView:nil confirmButton:confirmButton cancleButton:cancleButton];
-}
-
-+ (void)showImage:(UIImage*)image content:(NSString*)content {
-    [SMAlert showImage:image content:content confirmButton:nil];
 }
 
 + (void)showImage:(UIImage*)image content:(NSString*)content confirmButton:(SMButton*)confirmButton {
@@ -79,139 +75,91 @@ typedef void (^ShowaAtion)(void);
 }
 
 - (void)showImage:(UIImage*)image content:(NSString*)content customView:(UIView*)customView confirmButton:(SMButton*)confirmButton cancleButton:(SMButton*)cancleButton {
-    __weak SMAlert *weakSelf = self;
-    ShowaAtion action = ^{
-        __strong SMAlert *strongSelf = weakSelf;
-        strongSelf.backgroundView = [UIButton new];
-        strongSelf.backgroundView.frame = strongSelf.bounds;
-        strongSelf.backgroundView.backgroundColor = [UIColor clearColor];
-        [strongSelf addSubview:strongSelf.backgroundView];
-        [strongSelf.frontWindow addSubview:strongSelf];
-        
-        if (![strongSelf.alertBackgroundColor isEqual:[UIColor clearColor]]) {
-            [UIView animateWithDuration:strongSelf.fadeInAnimationDuration animations:^{
-                strongSelf.backgroundView.backgroundColor = strongSelf.alertBackgroundColor;
-            }];
-        }
-        if (!confirmButton || strongSelf.touchToHide) {
-            //only content or allow touch to hide
-            [strongSelf.backgroundView addTarget:strongSelf action:@selector(hide) forControlEvents:UIControlEventTouchUpInside];
-        }
-        if (!confirmButton && cancleButton) {
-            NSAssert(NO,@"如果只需要一个按钮，请使用confirmButton");
-        }
-        if (confirmButton) {
-            [confirmButton setBackgroundColor:strongSelf.confirmBtBackgroundColor];
-            [confirmButton setTitleColor:strongSelf.confirmBtTitleColor forState:UIControlStateNormal];
-            [confirmButton.titleLabel setFont:strongSelf.btTitleFont];
-        }
-        if (cancleButton) {
-            [cancleButton setBackgroundColor:strongSelf.cancleBtBackgroundColor];
-            [cancleButton setTitleColor:strongSelf.cancleBtTitleColor forState:UIControlStateNormal];
-            [cancleButton.titleLabel setFont:strongSelf.btTitleFont];
-        }
-        
-        strongSelf.controlView = [SMControlView new];
-        if (customView) {
-            [strongSelf.controlView setupCustomView:customView confirmButton:confirmButton cancleButton:cancleButton];
-        }else{
-            strongSelf.controlView.contentTextColor = strongSelf.contentTextColor;
-            strongSelf.controlView.contentFont = strongSelf.contentFont;
-            strongSelf.controlView.lineSpace = strongSelf.contentLineSpace;
-            strongSelf.controlView.contentTextAlignment = strongSelf.contentTextAlignment;
-            [strongSelf.controlView setupImage:image content:content confirmButton:confirmButton cancleButton:cancleButton];
-        }
-        [strongSelf addSubview:strongSelf.controlView];
-        NSLayoutConstraint *leftConstraint = [NSLayoutConstraint constraintWithItem:strongSelf.controlView
-                                                                          attribute:NSLayoutAttributeCenterX
-                                                                          relatedBy:NSLayoutRelationEqual
-                                                                             toItem:self
-                                                                          attribute:NSLayoutAttributeLeft
-                                                                         multiplier:1.0
-                                                                           constant:self.frame.size.width/2];
-        
-        NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:strongSelf.controlView
-                                                                         attribute:NSLayoutAttributeCenterY
-                                                                         relatedBy:NSLayoutRelationEqual
-                                                                            toItem:self
-                                                                         attribute:NSLayoutAttributeTop
-                                                                        multiplier:1.0
-                                                                          constant:self.frame.size.height/2];
-        [self addConstraint:leftConstraint];
-        [self addConstraint:topConstraint];
-        
-        CABasicAnimation *animaitonX = [CABasicAnimation animationWithKeyPath:@"transform.scale.x"];
-        animaitonX.removedOnCompletion = NO;
-        animaitonX.fromValue = @1.1;
-        animaitonX.toValue = @1;
-        animaitonX.duration = strongSelf.fadeInAnimationDuration;
-        [strongSelf.controlView.layer addAnimation:animaitonX forKey:nil];
-        CABasicAnimation *animaitonY = [CABasicAnimation animationWithKeyPath:@"transform.scale.y"];
-        animaitonY.removedOnCompletion = NO;
-        animaitonY.fromValue = @1.1;
-        animaitonY.toValue = @1;
-        animaitonY.duration = strongSelf.fadeInAnimationDuration;
-        [strongSelf.controlView.layer addAnimation:animaitonY forKey:nil];
-        CABasicAnimation *animaitonAlpha = [CABasicAnimation animationWithKeyPath:@"alpha"];
-        animaitonAlpha.removedOnCompletion = NO;
-        animaitonAlpha.fromValue = @0.5;
-        animaitonAlpha.toValue = @1;
-        animaitonAlpha.duration = strongSelf.fadeInAnimationDuration;
-        [strongSelf.controlView.layer addAnimation:animaitonAlpha forKey:nil];
-        
-        self.isVisible = YES;
-    };
+    if (self.isVisible == YES) return;
+    self.backgroundView = [UIButton new];
+    self.backgroundView.frame = self.bounds;
+    self.backgroundView.backgroundColor = [UIColor clearColor];
+    [self addSubview:self.backgroundView];
+    [self.frontWindow addSubview:self];
     
-    [self.showArray addObject:action];
-    [self.completionArray addObject:^{}];
-    
-    if (!self.isVisible) {
-        self.showArray.firstObject();
+    if (![self.alertBackgroundColor isEqual:[UIColor clearColor]]) {
+        [UIView animateWithDuration:self.fadeInAnimationDuration animations:^{
+            self.backgroundView.backgroundColor = self.alertBackgroundColor;
+        }];
     }
+    if (!confirmButton && cancleButton) {
+        NSAssert(NO,@"如果只需要一个按钮，请使用confirmButton");
+    }
+    if (confirmButton) {
+        [confirmButton setBackgroundColor:self.confirmBtBackgroundColor];
+        [confirmButton setTitleColor:self.confirmBtTitleColor forState:UIControlStateNormal];
+        [confirmButton.titleLabel setFont:self.btTitleFont];
+    }
+    if (cancleButton) {
+        [cancleButton setBackgroundColor:self.cancleBtBackgroundColor];
+        [cancleButton setTitleColor:self.cancleBtTitleColor forState:UIControlStateNormal];
+        [cancleButton.titleLabel setFont:self.btTitleFont];
+    }
+    
+    self.controlView = [SMControlView new];
+    if (customView) {
+        [self.controlView setupCustomView:customView confirmButton:confirmButton cancleButton:cancleButton];
+    }else{
+        self.controlView.contentTextColor = self.contentTextColor;
+        self.controlView.contentFont = self.contentFont;
+        self.controlView.lineSpace = self.contentLineSpace;
+        self.controlView.contentTextAlignment = self.contentTextAlignment;
+        [self.controlView setupImage:image content:content confirmButton:confirmButton cancleButton:cancleButton];
+    }
+    [self addSubview:self.controlView];
+    NSLayoutConstraint *leftConstraint = [NSLayoutConstraint constraintWithItem:self.controlView
+                                                                      attribute:NSLayoutAttributeCenterX
+                                                                      relatedBy:NSLayoutRelationEqual
+                                                                         toItem:self
+                                                                      attribute:NSLayoutAttributeLeft
+                                                                     multiplier:1.0
+                                                                       constant:self.frame.size.width/2];
+    
+    NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:self.controlView
+                                                                     attribute:NSLayoutAttributeCenterY
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTop
+                                                                    multiplier:1.0
+                                                                      constant:self.frame.size.height/2];
+    [self addConstraint:leftConstraint];
+    [self addConstraint:topConstraint];
+    
+    CABasicAnimation *animaitonX = [CABasicAnimation animationWithKeyPath:@"transform.scale.x"];
+    animaitonX.removedOnCompletion = NO;
+    animaitonX.fromValue = @1.1;
+    animaitonX.toValue = @1;
+    animaitonX.duration = self.fadeInAnimationDuration;
+    [self.controlView.layer addAnimation:animaitonX forKey:nil];
+    CABasicAnimation *animaitonY = [CABasicAnimation animationWithKeyPath:@"transform.scale.y"];
+    animaitonY.removedOnCompletion = NO;
+    animaitonY.fromValue = @1.1;
+    animaitonY.toValue = @1;
+    animaitonY.duration = self.fadeInAnimationDuration;
+    [self.controlView.layer addAnimation:animaitonY forKey:nil];
+    CABasicAnimation *animaitonAlpha = [CABasicAnimation animationWithKeyPath:@"alpha"];
+    animaitonAlpha.removedOnCompletion = NO;
+    animaitonAlpha.fromValue = @0.5;
+    animaitonAlpha.toValue = @1;
+    animaitonAlpha.duration = self.fadeInAnimationDuration;
+    [self.controlView.layer addAnimation:animaitonAlpha forKey:nil];
+    self.isVisible = YES;
 }
 
 + (void)hide {
-    [[SMAlert sharedView] hideAll:NO];
-}
-// 隐藏Alert并清除待显示队列
-+(void)hideAll {
-    [[SMAlert sharedView] hideAll:YES];
-}
-
-+ (void)hideCompletion:(void (^)(void))completion {
-    if (completion) {
-        [[SMAlert sharedView].completionArray replaceObjectAtIndex:[SMAlert sharedView].completionArray.count-1 withObject:completion];
-    }
-}
-
-- (void)hideAll:(BOOL)isAll {
-    if (self.isVisible == NO) {
-        return;
-    }
-    [self.backgroundView removeFromSuperview];
-    self.backgroundView = nil;
-    
-    [self.controlView removeFromSuperview];
-    self.controlView = nil;
-    
-    [self removeFromSuperview];
-    
-    self.completionArray.firstObject();
-    
-    self.isVisible = NO;
-    
-    [self.showArray removeObjectAtIndex:0];
-    [self.completionArray removeObjectAtIndex:0];
-    
-    if (self.showArray.count != 0) {
-        if (isAll) {
-            [self.showArray removeAllObjects];
-        }else{
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                self.showArray.firstObject();
-            });
-        }
-    }
+    SMAlert *alert = [SMAlert sharedView];
+    if (alert.isVisible == NO) return;
+    [alert.backgroundView removeFromSuperview];
+    alert.backgroundView = nil;
+    [alert.controlView removeFromSuperview];
+    alert.controlView = nil;
+    [alert removeFromSuperview];
+    alert.isVisible = NO;
 }
 
 #pragma mark - initWithFrame
@@ -228,7 +176,6 @@ typedef void (^ShowaAtion)(void);
         self.contentLineSpace = 4.0;
         self.contentFont = [UIFont systemFontOfSize:15.0];
         self.btTitleFont = [UIFont systemFontOfSize:15.0];
-        self.touchToHide = NO;
         self.contentTextAlignment = NSTextAlignmentLeft;
     }
     return self;
@@ -249,81 +196,57 @@ typedef void (^ShowaAtion)(void);
 #pragma mark - UIAppearance Setters
 
 + (void)setFadeInAnimationDuration:(NSTimeInterval)duration {
-    if (duration==0) {
-        return;
-    }
+    if (duration==0) return;
     [SMAlert sharedView].fadeInAnimationDuration = duration;
 }
 
 + (void)setFadeOutAnimationDuration:(NSTimeInterval)duration {
-    if (duration==0) {
-        return;
-    }
+    if (duration==0) return;
     [SMAlert sharedView].fadeOutAnimationDuration = duration;
 }
 
 + (void)setAlertBackgroundColor:(UIColor*)color {
-    if (!color) {
-        return;
-    }
+    if (!color) return;
     [SMAlert sharedView].alertBackgroundColor = color;
 }
 
 + (void)setConfirmBtBackgroundColor:(UIColor*)color {
-    if (!color) {
-        return;
-    }
+    if (!color) return;
     [SMAlert sharedView].confirmBtBackgroundColor = color;
 }
 
 + (void)setCancleBtBackgroundColor:(UIColor*)color {
-    if (!color) {
-        return;
-    }
+    if (!color) return;
     [SMAlert sharedView].cancleBtBackgroundColor = color;
 }
 
 + (void)setConfirmBtTitleColor:(UIColor*)color {
-    if (!color) {
-        return;
-    }
+    if (!color) return;
     [SMAlert sharedView].confirmBtTitleColor = color;
 }
 
 + (void)setCancleBtTitleColor:(UIColor*)color {
-    if (!color) {
-        return;
-    }
+    if (!color) return;
     [SMAlert sharedView].cancleBtTitleColor = color;
 }
 
 + (void)setContentFont:(UIFont*)font {
-    if (!font) {
-        return;
-    }
+    if (!font) return;
     [SMAlert sharedView].contentFont = font;
 }
 
 + (void)setContentTextColor:(UIColor*)color {
-    if (!color) {
-        return;
-    }
+    if (!color) return;
     [SMAlert sharedView].contentTextColor = color;
 }
 
 + (void)setBtTitleFont:(UIFont*)font {
-    if (!font) {
-        return;
-    }
+    if (!font) return;
     [SMAlert sharedView].btTitleFont = font;
 }
 
 + (void)setContentLineSpace:(CGFloat)lineSpace {
     [SMAlert sharedView].contentLineSpace = lineSpace;
-}
-
-+ (void)setTouchToHide:(BOOL)touchToHide {
-    [SMAlert sharedView].touchToHide = touchToHide;
 }
 
 + (void)setContentTextAlignment:(NSTextAlignment)textAlignment {

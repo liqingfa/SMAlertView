@@ -18,8 +18,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     self.titles = [NSMutableArray new];
-    [self.titles addObject:@[@"内容-左右按钮",@"内容-一个按钮",@"内容-无按钮"]];
-    [self.titles addObject:@[@"图片-内容-左右按钮",@"图片-内容-一个按钮",@"图片-内容-无按钮"]];
+    [self.titles addObject:@[@"内容-左右按钮",@"内容-一个按钮"]];
+    [self.titles addObject:@[@"图片-内容-左右按钮",@"图片-内容-一个按钮"]];
     [self.titles addObject:@[@"自定义view-左右按钮",@"自定义view-一个按钮",@"自定义view-无按钮"]];
 }
 
@@ -61,12 +61,6 @@
             [SMAlert showContent:@"扈江离与辟芷兮，纫秋兰以为佩。汨余若将不及兮，恐年岁之不吾与。朝搴阰之木兰兮，夕揽洲之宿莽。日月忽其不淹兮，春与秋其代序。" confirmButton:[SMButton initWithTitle:@"确定" clickAction:^{
                 [SMAlert hide];
             }]];
-        }else if (indexPath.row == 2){
-            [SMAlert showContent:@"扈江离与辟芷兮，纫秋兰以为佩。汨余若将不及兮，恐年岁之不吾与。朝搴阰之木兰兮，夕揽洲之宿莽。日月忽其不淹兮，春与秋其代序。"];
-            [SMAlert showContent:@"扈江离与辟芷兮，纫秋兰以为佩。汨余若将不及兮，恐年岁之不吾与。朝搴阰之木兰兮，夕揽洲之宿莽。日月忽其不淹兮，春与秋其代序。"];
-            [SMAlert hideCompletion:^{
-                NSLog(@"===2");
-            }];
         }
     }else if(indexPath.section==1){
         [SMAlert setConfirmBtBackgroundColor:[UIColor colorWithRed:89/255.0 green:183/255.0 blue:255/255.0 alpha:1]];
@@ -82,8 +76,6 @@
             [SMAlert showImage:[UIImage imageNamed:@"shangpin_img_ticket"] content:@"日月忽其不淹兮，春与秋其代序。" confirmButton:[SMButton initWithTitle:@"确定" clickAction:^{
                 [SMAlert hide];
             }]];
-        }else if(indexPath.row==2){
-            [SMAlert showImage:[UIImage imageNamed:@"function_img_remind"] content:@"日月忽其不淹兮，春与秋其代序。"];
         }
     }else{
         [SMAlert setConfirmBtBackgroundColor:[UIColor whiteColor]];
